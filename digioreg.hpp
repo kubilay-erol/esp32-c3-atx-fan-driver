@@ -1,0 +1,119 @@
+
+#pragma once 
+
+#define GPIO_ENABLE_REG reinterpret_cast<volatile uint32_t*>(0x60004020) //global direction reg
+
+
+#define GPIO0_MODE_REG        reinterpret_cast<volatile uint32_t*>(0x60009004) 
+#define GPIO1_MODE_REG        reinterpret_cast<volatile uint32_t*>(0x60009008)
+#define GPIO2_MODE_REG        reinterpret_cast<volatile uint32_t*>(0x6000900C) 
+#define GPIO3_MODE_REG        reinterpret_cast<volatile uint32_t*>(0x60009010) 
+#define GPIO4_MODE_REG        reinterpret_cast<volatile uint32_t*>(0x60009014) 
+#define GPIO5_MODE_REG        reinterpret_cast<volatile uint32_t*>(0x60009018) 
+#define GPIO6_MODE_REG        reinterpret_cast<volatile uint32_t*>(0x6000901C) 
+#define GPIO7_MODE_REG        reinterpret_cast<volatile uint32_t*>(0x60009020) 
+#define GPIO8_MODE_REG        reinterpret_cast<volatile uint32_t*>(0x60009024) 
+#define GPIO9_MODE_REG        reinterpret_cast<volatile uint32_t*>(0x60009028) 
+#define GPIO10_MODE_REG       reinterpret_cast<volatile uint32_t*>(0x6000902C) 
+#define GPIO11_MODE_REG       reinterpret_cast<volatile uint32_t*>(0x60009030) 
+#define GPIO12_MODE_REG       reinterpret_cast<volatile uint32_t*>(0x60009034) 
+#define GPIO13_MODE_REG       reinterpret_cast<volatile uint32_t*>(0x60009038) 
+#define GPIO14_MODE_REG       reinterpret_cast<volatile uint32_t*>(0x6000903C) 
+#define GPIO15_MODE_REG       reinterpret_cast<volatile uint32_t*>(0x60009040) 
+#define GPIO16_MODE_REG       reinterpret_cast<volatile uint32_t*>(0x60009044) 
+#define GPIO17_MODE_REG       reinterpret_cast<volatile uint32_t*>(0x60009048)
+#define GPIO18_MODE_REG       reinterpret_cast<volatile uint32_t*>(0x6000904C) 
+#define GPIO19_MODE_REG       reinterpret_cast<volatile uint32_t*>(0x60009050) 
+#define GPIO20_MODE_REG       reinterpret_cast<volatile uint32_t*>(0x60009054) 
+#define GPIO21_MODE_REG       reinterpret_cast<volatile uint32_t*>(0x60009058) 
+
+
+
+#define GPIO_DATA_REG reinterpret_cast<volatile uint32_t*>(0x60004004) // Global Output Reg
+
+
+
+#include <cstdint>
+#include <new>
+
+
+class DigIOReg {
+
+public:
+
+    enum class Mode : uint32_t {
+        input = 0,
+        output = 1
+        
+    };
+
+    volatile uint32_t* const regconf; //register config
+    const Mode ioregmod;  // 1 -> input, 0 -> output
+    
+    volatile uint32_t* const gpiomode; //gpio mode address
+    
+    volatile uint32_t* const dataregadd; //data register address
+    
+    const uint32_t pinmask;
+
+    
+    static DigIOReg* digioreg(volatile uint32_t* regconf, Mode ioregmod, volatile uint32_t* gpiomode, volatile uint32_t* dataregadd, uint32_t pinmask, void* buffer) {
+        
+        
+        return ::new (buffer) DigIOReg(regconf, ioregmod, gpiomode, dataregadd, pinmask);
+        
+    }
+    
+    void SetHigh() {
+        if (ioregmod == Mode::output) {
+            *dataregadd |= pinmask;  // Just turn on the bit in the data register
+    }
+        
+    }
+    
+
+    void SetLow() {
+        if (ioregmod == Mode::output) {
+            *dataregadd &= ~pinmask; // Just turn off the bit in the data register
+    }
+        
+    }
+    
+    uint32_t ReadReg() const {
+        return *dataregadd;
+    }
+
+    uint32_t getMode() const {
+        return static_cast<uint32_t>(ioregmod);
+    }
+    
+
+    
+private:
+
+    DigIOReg(volatile uint32_t* rcf, Mode m, volatile uint32_t* ra, volatile uint32_t* da, uint32_t p) : regconf(rcf), ioregmod(m), gpiomode(ra), dataregadd(da), pinmask(p) {
+        
+        
+        
+        *gpiomode = 0;
+        
+        if (ioregmod == Mode::output) {
+            *regconf |= pinmask;  // Turn ON our pin's bit (Output)
+        } 
+        
+        else {
+            *regconf &= ~pinmask; // Turn OFF our pin's bit (Input)
+        }
+    
+ 
+    }
+    
+    
+};
+
+uint8_t buff1[sizeof(DigIOReg)];
+
+uint8_t buff2[sizeof(DigIOReg)];
+
+uint8_t buff3[sizeof(DigIOReg)];
+
