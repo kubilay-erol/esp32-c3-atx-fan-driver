@@ -32,5 +32,3 @@ The core driver engine operates entirely inside a lightweight loop structure tha
 ## Building and Flashing
 
 This project is configured for execution via PlatformIO using the `espressif32` development platform with a native bare-metal configuration.
-
-To compile and upload the firmware to your development board:
