@@ -10,16 +10,19 @@ public:
     uint64_t reference[num];
 
     uint64_t get_timer() {
-      
+    
         *(reinterpret_cast<volatile uint32_t*>(0x60023004)) = (1 << 30);   
 
+   
         while ((*(reinterpret_cast<volatile uint32_t*>(0x60023004)) & (1 << 29)) == 0) {
-       
+        
         }
 
+    
         uint32_t low = *(reinterpret_cast<volatile uint32_t*>(0x60023044)); 
         uint32_t high = *(reinterpret_cast<volatile uint32_t*>(0x60023040)); 
 
+    
         uint64_t ticks = (static_cast<uint64_t>(high) << 32) | low;
 
         return ticks;
