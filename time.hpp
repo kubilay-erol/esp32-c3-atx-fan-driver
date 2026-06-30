@@ -11,16 +11,16 @@ public:
 
     uint64_t get_timer() {
     
-        *(reinterpret_cast<volatile uint32_t*>(0x60023004)) = (1 << 30);   
+        *(reinterpret_cast<volatile uint32_t*>(0x60023004)) = (1 << 30); //write one to bit 30 to prepare low and high
 
    
-        while ((*(reinterpret_cast<volatile uint32_t*>(0x60023004)) & (1 << 29)) == 0) {
+        while ((*(reinterpret_cast<volatile uint32_t*>(0x60023004)) & (1 << 29)) == 0) { //check if bit 29 is flipped to 1 so data is ready
         
         }
 
     
-        uint32_t low = *(reinterpret_cast<volatile uint32_t*>(0x60023044)); 
-        uint32_t high = *(reinterpret_cast<volatile uint32_t*>(0x60023040)); 
+        uint32_t low = *(reinterpret_cast<volatile uint32_t*>(0x60023044)); //low
+        uint32_t high = *(reinterpret_cast<volatile uint32_t*>(0x60023040)); //high
 
     
         uint64_t ticks = (static_cast<uint64_t>(high) << 32) | low;
