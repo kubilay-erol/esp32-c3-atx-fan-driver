@@ -66,7 +66,7 @@ public:
     
     void SetHigh() {
         if (ioregmod == Mode::output) {
-            *dataregadd |= pinmask;  // Just turn on the bit in the data register
+            *dataregadd |= pinmask; 
     }
         
     }
@@ -74,7 +74,7 @@ public:
 
     void SetLow() {
         if (ioregmod == Mode::output) {
-            *dataregadd &= ~pinmask; // Just turn off the bit in the data register
+            *dataregadd &= ~pinmask; 
     }
         
     }
@@ -98,11 +98,11 @@ private:
         *gpiomode = 0;
         
         if (ioregmod == Mode::output) {
-            *regconf |= pinmask;  // Turn ON our pin's bit (Output)
+            *regconf |= pinmask;  
         } 
         
         else {
-            *regconf &= ~pinmask; // Turn OFF our pin's bit (Input)
+            *regconf &= ~pinmask; 
         }
     
  
